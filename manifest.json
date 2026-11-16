@@ -1,0 +1,228 @@
+{
+  "id": "yt-music",
+  "name": "YT Music",
+  "version": "1.1",
+  "description": "A YouTube Music style player: big cover, lyrics at the bottom, Quick picks and a red-on-black look",
+  "author": "CoriMyp",
+  "icon": "icon.png",
+  "banner": "banner.png",
+  "look": {
+    "accentColor": "#FF0000",
+    "pureBlack": "true",
+    "thumbnailCornerRadius": "8",
+    "homeStyle": "LISTEN_NOW",
+    "playlistStyle": "MINIMAL",
+    "lyricsMotionStyle": "MOTION"
+  },
+  "settings": [
+    {
+      "key": "theme",
+      "label": "Theme",
+      "type": "select",
+      "default": "black",
+      "options": [
+        { "value": "black", "label": "Pure black", "description": "YouTube Music's true black everywhere.", "look": { "pureBlack": "true" } },
+        { "value": "graphite", "label": "Graphite", "description": "Dark grey instead of pure black.", "look": { "pureBlack": "false" } }
+      ]
+    },
+    {
+      "key": "home",
+      "label": "Home layout",
+      "type": "select",
+      "default": "listen_now",
+      "options": [
+        { "value": "listen_now", "label": "Listen now", "description": "The closest Home to YouTube Music: shelf after shelf of picks.", "look": { "homeStyle": "LISTEN_NOW" } },
+        { "value": "hop_in", "label": "Hop in", "description": "One big card to jump back into.", "look": { "homeStyle": "HOP_IN" } },
+        { "value": "mochyy", "label": "Mochy's own", "description": "Mochy's original home with moods and genres.", "look": { "homeStyle": "MOCHYY" } }
+      ]
+    },
+    {
+      "key": "library",
+      "label": "Library & playlists",
+      "type": "select",
+      "default": "minimal",
+      "options": [
+        { "value": "minimal", "label": "Minimal", "description": "Tight rows, closest to a YouTube Music library list.", "look": { "playlistStyle": "MINIMAL" } },
+        { "value": "classic", "label": "Classic", "description": "Cover next to the words.", "look": { "playlistStyle": "CLASSIC" } },
+        { "value": "flow", "label": "Flow", "description": "Big, airy covers.", "look": { "playlistStyle": "FLOW" } }
+      ]
+    },
+    {
+      "key": "corners",
+      "label": "Cover corners",
+      "type": "select",
+      "default": "soft",
+      "options": [
+        { "value": "soft", "label": "Soft (8)", "look": { "thumbnailCornerRadius": "8" } },
+        { "value": "sharp", "label": "Sharp (0)", "look": { "thumbnailCornerRadius": "0" } },
+        { "value": "round", "label": "Round (22)", "look": { "thumbnailCornerRadius": "22" } }
+      ]
+    },
+    { "key": "kick", "label": "Cover pulses with the bass", "type": "toggle", "default": "true" },
+    { "key": "glow", "label": "Progress colour", "type": "text", "hint": "#FF0000", "description": "Leave it empty for YouTube red." }
+  ],
+  "player": {
+    "name": "YT Music",
+    "background": [
+      { "type": "blurredCover" },
+      { "type": "gradient", "colors": ["#00000000", "#0A0A0A"], "opacity": 0.92 }
+    ],
+    "dim": 0.42,
+    "padding": 22,
+    "align": "center",
+    "scroll": true,
+    "menuButton": { "side": "start", "color": "inkSoft", "fill": "#00000000" },
+    "header": [
+      { "type": "text", "text": "{album}", "size": 10, "upper": true, "align": "end", "opacity": 0.55, "spacing": 0.08, "wrap": true }
+    ],
+    "keyframes": {
+      "pop": { "0%": { "scale": 0.84, "opacity": 0, "blur": 12 }, "65%": { "scale": 1.03, "easing": "easeOut" }, "100%": { "scale": 1 } },
+      "kick": { "from": { "scale": 1 }, "to": { "scale": 1.05 } },
+      "heartbeat": { "0%": { "scale": 1 }, "30%": { "scale": 1.3 }, "60%": { "scale": 0.94 }, "100%": { "scale": 1 } }
+    },
+    "styles": {
+      "title": { "size": 23, "weight": "bold", "align": "start", "lines": 1, "enter": { "keyframes": "pop", "duration": 620, "on": "song" } },
+      "artist": { "size": 14, "color": "inkSoft", "align": "start", "lines": 1, "enter": { "type": "rise", "delay": 70, "on": "song" } },
+      "lyrics": { "height": 176, "size": 21, "align": "center", "color": "ink" }
+    },
+    "customise": { "title": "YT Music", "settings": ["theme", "home", "library", "corners", "kick", "glow"] },
+    "menu": [
+      { "title": "Quick picks", "page": "picks" },
+      { "title": "Open in YouTube Music", "link": "https://music.youtube.com/search?q={artist}%20{title}" },
+      { "title": "Find live versions", "search": "{title} {artist} live" }
+    ],
+    "blocks": [
+      { "type": "space", "size": 4 },
+      { "type": "stack", "blocks": [
+        { "type": "cover", "size": 0.79, "corner": 26, "blur": 36, "opacity": 0.55, "scale": 1.06 },
+        { "type": "cover", "size": 0.72, "corner": 16, "shadow": true, "when": "kick",
+          "animate": { "keyframes": "kick", "clock": "bass" },
+          "enter": { "type": "zoom", "duration": 450, "on": "song" },
+          "states": { "@paused": { "scale": 0.95, "blur": 2 } },
+          "transition": "spring" },
+        { "type": "cover", "size": 0.72, "corner": 16, "shadow": true, "when": "!kick",
+          "enter": { "type": "zoom", "duration": 450, "on": "song" },
+          "states": { "@paused": { "scale": 0.95, "blur": 2 } },
+          "transition": "spring" }
+      ] },
+      { "type": "space", "size": 22 },
+      { "type": "row", "gap": 26, "blocks": [
+        { "type": "space", "grow": true },
+        { "type": "button", "action": "like", "size": 40, "fill": "#00000000", "color": "ink",
+          "states": { "!@liked": { "opacity": 0.4 } },
+          "on": { "like": { "keyframes": "heartbeat", "duration": 520 } } },
+        { "type": "button", "action": "lyrics", "size": 40, "fill": "#00000000", "color": "ink" },
+        { "type": "button", "action": "customise", "size": 40, "fill": "#00000000", "color": "ink" },
+        { "type": "button", "action": "menu", "size": 40, "fill": "#00000000", "color": "ink" },
+        { "type": "space", "grow": true }
+      ] },
+      { "type": "space", "size": 18 },
+      { "type": "title", "align": "start" },
+      { "type": "space", "size": 3 },
+      { "type": "artist", "align": "start" },
+      { "type": "space", "size": 18 },
+      { "type": "progress", "style": "line", "times": true, "color": "$glow|#FF0000", "track": "#3DFFFFFF" },
+      { "type": "space", "size": 14 },
+      { "type": "row", "gap": 14, "blocks": [
+        { "type": "space", "grow": true },
+        { "type": "button", "action": "shuffle", "size": 34, "fill": "#00000000", "color": "inkSoft" },
+        { "type": "button", "action": "previous", "size": 40, "fill": "#00000000", "color": "ink" },
+        { "type": "button", "action": "playPause", "size": 64, "fill": "#FFFFFFFF", "color": "#0A0A0A" },
+        { "type": "button", "action": "next", "size": 40, "fill": "#00000000", "color": "ink" },
+        { "type": "button", "action": "repeat", "size": 34, "fill": "#00000000", "color": "inkSoft" },
+        { "type": "space", "grow": true }
+      ] },
+      { "type": "space", "size": 22 },
+      { "type": "lyrics", "when": "@lyrics", "enter": { "type": "rise", "delay": 60 } }
+    ]
+  },
+  "pages": [
+    {
+      "id": "picks",
+      "title": "Quick picks",
+      "subtitle": "Your home tab, the YouTube Music way",
+      "inSettings": true,
+      "background": { "colors": ["#1A0506", "#08080A"] },
+      "blocks": [
+        { "type": "heading", "text": "Quick picks" },
+        { "type": "text", "text": "Mochy draws its own Home, so a module can't add shelves to it: a look may only pick one of Mochy's three Home layouts. This page is the shortcut instead, laid out like the rows you wanted at the top of Home. Every row opens a real search in Mochy, so it plays through the normal player with all your Audio Lab effects." },
+        { "type": "divider" },
+        { "type": "card", "glass": true, "blocks": [
+          { "type": "heading", "text": "Quick picks" },
+          { "type": "search", "query": "chill acoustic", "title": "Chill" },
+          { "type": "search", "query": "feel good pop", "title": "Energy" },
+          { "type": "search", "query": "deep focus", "title": "Focus" },
+          { "type": "search", "query": "late night drive", "title": "Late night" },
+          { "type": "search", "query": "party hits", "title": "Party" },
+          { "type": "search", "query": "golden hour indie", "title": "Golden hour" }
+        ] },
+        { "type": "space", "size": 8 },
+        { "type": "card", "glass": true, "blocks": [
+          { "type": "heading", "text": "Mixed for you" },
+          { "type": "search", "query": "daily mix", "title": "Your daily mix" },
+          { "type": "search", "query": "new music friday", "title": "New releases" },
+          { "type": "search", "query": "forgotten favourites", "title": "Forgotten favourites" },
+          { "type": "search", "query": "acoustic covers", "title": "Acoustic covers" }
+        ] },
+        { "type": "space", "size": 8 },
+        { "type": "card", "glass": true, "blocks": [
+          { "type": "heading", "text": "Moods" },
+          { "type": "search", "query": "sad songs", "title": "Blue" },
+          { "type": "search", "query": "workout", "title": "Workout" },
+          { "type": "search", "query": "commute", "title": "Commute" },
+          { "type": "search", "query": "rainy day", "title": "Rainy day" },
+          { "type": "search", "query": "sleep", "title": "Sleep" }
+        ] },
+        { "type": "space", "size": 8 },
+        { "type": "card", "glass": true, "blocks": [
+          { "type": "heading", "text": "Around the song" },
+          { "type": "search", "query": "{artist}", "title": "This artist" },
+          { "type": "search", "query": "{artist} essentials", "title": "This artist's essentials" },
+          { "type": "search", "query": "{title} {artist} live", "title": "Live versions" },
+          { "type": "search", "query": "{title} {artist} cover", "title": "Covers" },
+          { "type": "search", "query": "{title} instrumental", "title": "Instrumental" }
+        ] },
+        { "type": "space", "size": 8 },
+        { "type": "card", "glass": true, "blocks": [
+          { "type": "heading", "text": "The look" },
+          { "type": "setting", "key": "theme" },
+          { "type": "setting", "key": "home" },
+          { "type": "setting", "key": "library" },
+          { "type": "setting", "key": "corners" },
+          { "type": "setting", "key": "kick" }
+        ] },
+        { "type": "space", "size": 8 },
+        { "type": "button", "text": "Open YouTube Music", "link": "https://music.youtube.com" }
+      ]
+    },
+    {
+      "id": "yt-settings",
+      "title": "YT Music",
+      "subtitle": "Home, Library and the player",
+      "inSettings": true,
+      "background": { "colors": ["#140406", "#08080A"] },
+      "blocks": [
+        { "type": "heading", "text": "The look" },
+        { "type": "text", "text": "YouTube red on true black, sharp-ish covers and word-by-word lyrics. A look may only change Mochy's own settings, so Home and Library here pick one of Mochy's layouts rather than inventing new screens." },
+        { "type": "card", "glass": true, "blocks": [
+          { "type": "setting", "key": "theme" },
+          { "type": "setting", "key": "home" },
+          { "type": "setting", "key": "library" },
+          { "type": "setting", "key": "corners" }
+        ] },
+        { "type": "space", "size": 8 },
+        { "type": "heading", "text": "The player" },
+        { "type": "text", "text": "Cover on top, four buttons under it, the title, the progress line with its times, then shuffle · previous · play · next · repeat, and the lyrics at the very bottom. The chevron at the top right still has lyrics, shuffle, repeat and the other menu." },
+        { "type": "card", "glass": true, "blocks": [
+          { "type": "setting", "key": "kick" },
+          { "type": "setting", "key": "glow" }
+        ] }
+      ]
+    }
+  ],
+  "actions": [
+    { "title": "Quick picks", "page": "picks" },
+    { "title": "Open in YouTube Music", "link": "https://music.youtube.com/search?q={artist}%20{title}" },
+    { "title": "Find live versions", "search": "{title} {artist} live" }
+  ]
+}
