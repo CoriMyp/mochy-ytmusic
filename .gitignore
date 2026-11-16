@@ -1,4 +1,4 @@
-build/
+#build/
 .cloud-attachments/
 .freebuff/
 thread-*.md
